@@ -4,6 +4,7 @@ from getters import *
 from collector import collect_gw, merge_gw
 from understat import parse_epl_data
 import csv
+import os
 
 def parse_data():
     """ Parse and store all the data
@@ -36,7 +37,9 @@ def parse_data():
     player_ids = get_player_ids(base_filename)
     num_players = len(data["elements"])
     player_base_filename = base_filename + 'players/'
+    os.makedirs(os.path.dirname(player_base_filename), exist_ok=True)
     gw_base_filename = base_filename + 'gws/'
+    os.makedirs(os.path.dirname(gw_base_filename), exist_ok=True)
     print("Extracting player specific data")
     for i,name in player_ids.items():
         player_data = get_individual_player_data(i)
@@ -50,11 +53,9 @@ def parse_data():
             for xp in xPoints:
                 w.writerow(xp)
         print("Collecting gw scores")
-        collect_gw(gw_num, player_base_filename, gw_base_filename, base_filename) 
+        collect_gw(gw_num, player_base_filename, gw_base_filename, base_filename)
         print("Merging gw scores")
         merge_gw(gw_num, gw_base_filename)
-    #understat_filename = base_filename + 'understat'
-    #parse_epl_data(understat_filename)
 
 def fixtures(base_filename):
     data = get_fixtures_data()
